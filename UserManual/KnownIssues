@@ -1,1 +1,10 @@
-In this file, you will get updated information on known issues and how to avoid them if possible.
+Known Issues:
+Auch wenn wir mit unserem Fallguard insgesamt sehr zufrieden sind, gibt es auch einige kleinere Known Issues, auf die wir hier
+aufmerksam machen möchten.
+
+Hartes, eher kantiges Gehäuse:
+Unser aktuelles Design ist eher ein Proof of Concept. Der Fokus lag in der Entwicklung der Hardwarearchitektur und der Softwareentwicklung.
+Das Gehäuse selbst ist funktionstüchtig und genügt für eine Inbetriebnahme, allerdings besteht hier noch Optimierungsbedarf. Aktuell besteht
+das Gehäuse aus recht hartem PLA-Filament und ist recht kantig. Damit der Fallguard einen Sturz auf jeden Fall unbeschadet übersteht und den
+Alarm absetzen kann, war ein stabiles Gehäuse unerlässlich. Allerdings besteht momentan zusätzliche Verletzungsgefahr, sollte man direkt auf
+den Fallguard fallen. Um dieses Problem zu beheben, müsste man ein neues, flacheres Gehäuse entwickeln und es gegebenenfalls zusätzlich polstern.
