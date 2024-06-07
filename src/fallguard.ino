@@ -15,9 +15,11 @@
 #define RX_PIN D6
 #define TX_PIN D5
 
+// Enter your personal WiFi SSID and Password here
 const char *ssid = "***";
 const char *passwd = "***";
 
+// Enter your phone-number and the API-Key you get after setup here
 String phoneNumber = "***";
 String apiKey = "***";
 
