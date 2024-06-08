@@ -10,7 +10,7 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-#define LED_PIN D7
+#define LED_BUZZER_PIN D7
 #define BUTTON_PIN D3
 #define RX_PIN D6
 #define TX_PIN D5
@@ -38,7 +38,7 @@ boolean fall = false;
 
 void setup() {
 
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   SerialGPS.begin(9600);
@@ -68,9 +68,9 @@ void loop() {
         abort = true;
         break;
       }
-      digitalWrite(LED_PIN, HIGH);
+      digitalWrite(LED_BUZZER_PIN, HIGH);
       delay(1000);
-      digitalWrite(LED_PIN, LOW);
+      digitalWrite(LED_BUZZER_PIN, LOW);
       delay(1000);
     }
 
@@ -81,9 +81,9 @@ void loop() {
       sendWhatsAppMessage("!FALL DETECTION!\n" + link);
     } else {
       for (int i = 0; i < 5; i++) {
-        digitalWrite(LED_PIN, HIGH);
+        digitalWrite(LED_BUZZER_PIN, HIGH);
         delay(200);
-        digitalWrite(LED_PIN, LOW);
+        digitalWrite(LED_BUZZER_PIN, LOW);
         delay(200);
       }
     }
