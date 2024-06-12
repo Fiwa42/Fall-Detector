@@ -1,6 +1,4 @@
-/*
-* Fallguard
-*/
+/* <project_fallguard> */
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -50,6 +48,7 @@ void setup() {
   Wire.write(0);
   Wire.endTransmission(true);
 
+  // Establish WiFi connection
   WiFi.begin(ssid, passwd);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -59,16 +58,18 @@ void setup() {
 void loop() {
 
   checkFalling();
-  if (fall || !digitalRead(BUTTON_PIN)) {
+  if (fall || !digitalRead(BUTTON_PIN)) { // trigger alarm if fall is detected OR button is pressed manuelly
 
     delay(500);
 
     boolean abort = false;
     for (int i = 0; i < 10; i++) {
+      // Stop alarm and whatsapp message, when button is pressed again 
       if (!digitalRead(BUTTON_PIN)) {
         abort = true;
         break;
       }
+      // Alarm signal via LED and buzzer 
       digitalWrite(LED_BUZZER_PIN, HIGH);
       delay(1000);
       digitalWrite(LED_BUZZER_PIN, LOW);
@@ -76,11 +77,13 @@ void loop() {
     }
 
     if (!abort) {
+      // send Whatsapp containing SOS message and google maps link with GPS information (or "No GPS availaible")
       fetchGPSInfo();
       String link = gpsAvailable ? ("http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude) : "No GPS available";
-
+      
       sendWhatsAppMessage("!FALL DETECTION!\n" + link);
     } else {
+      // Signal that alarm was aborted
       for (int i = 0; i < 5; i++) {
         digitalWrite(LED_BUZZER_PIN, HIGH);
         delay(200);
@@ -89,12 +92,13 @@ void loop() {
       }
     }
 
-    fall = false;
+    fall = false; // reset falling
   }
 
   delay(100);
 }
 
+// Fetch current coordinates with GPS sensor, in case GPS is available
 void fetchGPSInfo() {
   gpsAvailable = false;
   if (SerialGPS.available() > 0) {
@@ -108,6 +112,7 @@ void fetchGPSInfo() {
   }
 }
 
+// Sends whatsapp message to specified phone number by performing a post request to the callmebot api
 void sendWhatsAppMessage(String message) {
 
   String url = "http://api.callmebot.com/whatsapp.php?phone=" + phoneNumber + "&apikey=" + apiKey + "&text=" + urlEncode(message);
@@ -122,8 +127,9 @@ void sendWhatsAppMessage(String message) {
   http.end();
 }
 
+// Sets fall=true, if fall is detected (tinker with the values, in case more/less sensibility is required)
 void checkFalling() {
-  mpu_read();
+  mpu_read(); // read in Accelerometer and Gyroscope Sensor data
   ax = (AcX - 2050) / 16384.00;
   ay = (AcY - 77) / 16384.00;
   az = (AcZ - 1947) / 16384.00;
@@ -135,13 +141,13 @@ void checkFalling() {
   int amplitude = raw_amplitude * 10;
 
   if (amplitude <= 2 && trigger2 == false) {
-    trigger1 = true;
+    trigger1 = true; // set trigger1
   }
 
   if (trigger1) {
     trigger1count++;
     if (amplitude >= 5) {
-      trigger2 = true;
+      trigger2 = true; // set trigger2
       trigger1 = false;
       trigger1count = 0;
     }
@@ -151,7 +157,7 @@ void checkFalling() {
     trigger2count++;
     angleChange = pow(pow(gx, 2) + pow(gy, 2) + pow(gz, 2), 0.5);
     if (angleChange >= 30 && angleChange <= 400) {
-      trigger3 = true;
+      trigger3 = true; // set trigger3
       trigger2 = false;
       trigger2count = 0;
     }
@@ -160,7 +166,7 @@ void checkFalling() {
   if (trigger3) {
     trigger3count++;
     if (trigger3count >= 5) {
-      fall = true;
+      fall = true; // set falling
       trigger3 = false;
       trigger3count = 0;
     }
@@ -177,7 +183,6 @@ void checkFalling() {
 }
 
 void mpu_read() {
-
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B);
   Wire.endTransmission(false);
