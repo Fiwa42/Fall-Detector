@@ -26,6 +26,7 @@ String apiKey = "***";
 TinyGPSPlus gps;
 SoftwareSerial SerialGPS(RX_PIN, TX_PIN);
 String latitude, longitude;
+boolean gpsAvailable;
 
 const int MPU_addr = 0x68;
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
@@ -76,7 +77,7 @@ void loop() {
 
     if (!abort) {
       fetchGPSInfo();
-      String link = "http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude;
+      String link = gpsAvailable ? ("http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude) : "No GPS available";
 
       sendWhatsAppMessage("!FALL DETECTION!\n" + link);
     } else {
@@ -95,11 +96,13 @@ void loop() {
 }
 
 void fetchGPSInfo() {
+  gpsAvailable = false;
   if (SerialGPS.available() > 0) {
     if (gps.encode(SerialGPS.read())) {
       if (gps.location.isValid()) {
         latitude = String(gps.location.lat(), 6);
         longitude = String(gps.location.lng(), 6);
+        gpsAvailable = true;
       }
     }
   }
