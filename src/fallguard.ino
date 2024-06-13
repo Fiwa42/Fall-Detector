@@ -82,6 +82,9 @@ void loop() {
       String link = gpsAvailable ? ("http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude) : "No GPS available";
       
       sendWhatsAppMessage("!FALL DETECTION!\n" + link);
+
+      // to disable the sharing of GPS information, delete the previous 4 lines and uncomment the following
+      // sendWhatsAppMessage("!FALL DETECTION!");
     } else {
       // Signal that alarm was aborted
       for (int i = 0; i < 5; i++) {
@@ -113,6 +116,7 @@ void fetchGPSInfo() {
 }
 
 // Sends whatsapp message to specified phone number by performing a post request to the callmebot api
+// (if you want to use a different messenger, go to callmebot.com to find further information
 void sendWhatsAppMessage(String message) {
 
   String url = "http://api.callmebot.com/whatsapp.php?phone=" + phoneNumber + "&apikey=" + apiKey + "&text=" + urlEncode(message);
