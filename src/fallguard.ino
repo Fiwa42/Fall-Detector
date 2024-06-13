@@ -18,6 +18,7 @@ const char *ssid = "***";
 const char *passwd = "***";
 
 // Enter your phone-number and the API-Key you get after setup here
+// Info about the API-Setup on callmebot.com/blog/free-api-whatsapp-messages/
 String phoneNumber = "***";
 String apiKey = "***";
 
