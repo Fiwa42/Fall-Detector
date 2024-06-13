@@ -1,1 +1,15 @@
-In this file, we will explain how to setup your own Fallguard.
+Auf Softwareebene ist der Fallguard extrem flexibel und kann frei an die entsprechenden Bedürfnisse angepasst werden.
+Der Code ist nicht sonderlich komplex und kann bei entsprechender Vorkenntnis leicht angepasst werden.
+Um auch Personen, die sich mit Programmieren nicht auskennen, die Möglichkeit zu geben, den Fallguard in seiner
+Funktionsweise anzupassen, haben wir an einigen Stellen im Code Kommentare eingefügt, die einfache Codeanpassungen erklären.
+
+Konkret haben wir einen Alternativcode eingefügt, der bei einem ausgelösten Alarm nur die Nachricht „!FALL DETECTION!“ sendet,
+ohne die GPS-Daten des Fallguards mitzusenden, falls das aus Gründen der Privatsphäre erwünscht ist.
+Wenn dies grundsätzlich gewünscht ist, kann auch ganz auf den GPS-Sensor verzichtet werden.
+
+Auch die Sturzerkennung des Fallguards kann in ihrer Empfindlichkeit angepasst werden. Wir haben im Code die Stellen markiert,
+an denen die rohen Eingangsdaten des Beschleunigungssensors mit entsprechenden Faktoren multipliziert werden, um berechnen zu können,
+ob die Beschleunigung tatsächlich einen Sturz vermuten lässt. Eine Anpassung der Faktoren führt dementsprechend zu einer anderen Empfindlichkeit.
+
+Alternativ kann natürlich auch ein anderer Messenger als WhatsApp für die Nachrichtenübermittlung verwendet werden.
+Dafür muss der Code ebenfalls nicht grundlegend verändert werden, die entsprechende Anleitung dazu findet sich ebenfalls auf callmebot.com.
