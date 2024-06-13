@@ -1,1 +1,24 @@
-In this file, we will explain how to configure your own Fallguard and how and where to make changes to the software to specify the way it works.
+Um den Fallguard nutzen zu können, muss er zunächst selbst hergestellt werden.
+Dafür werden sämtliche Teile unserer Materialliste benötigt. Darüber hinaus sind
+eine Lötstation und ein 3D-Drucker mit PLA-Filament zur Herstellung erforderlich.
+
+Anschließend sind die Komponenten wie im Schaltplan dargestellt miteinander zu verlöten.
+Wir haben dafür eine Lochplatine verwendet. Die Kabel zwischen den einzelnen Komponenten
+sollten nicht zu lang sein, da der Platz im Fallguard begrenzt ist. Sollten die
+Komponenten anders als im Schaltplan dargestellt verlötet werden, muss auch der
+Code entsprechend angepasst werden!
+
+Das Gehäuse besteht aus zwei Teilen, nämlich einmal dem Gehäuse selbst
+und einmal dem Deckel. Die 3D-Druck-Dateien befinden sich hier auf unserem GitHub-Repository.
+Neben den beiden Dateien für die beiden Gehäusebestandteile befindet sich dort
+noch eine weitere Datei, mit der der "SOS"-Text gedruckt werden kann.
+Dieser wird auf den Deckel des Fallguards geklebt.
+
+Ist der Fallguard fertig verlötet, muss der entsprechende Code installiert werden.
+Er ist ebenfalls auf unserem GitHub zu finden. Vor der Installation muss noch die
+WLAN SSID und der API-Key von callmebot.com im Code an der entsprechenden Stelle
+hinterlegt werden. Die entsprechende Anleitung dazu findet sich auf callmebot.com.
+
+Anschließend kann die gesamte Hardware im Gehäuse verstaut werden, bevor der Deckel
+mit entsprechenden 3D-Druck-Schrauben auf das Gehäuse verschraubt wird.
+Nach dem Laden ist der Fallguard nun einsatzfähig.
