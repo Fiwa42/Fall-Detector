@@ -26,6 +26,7 @@ TinyGPSPlus gps;
 SoftwareSerial SerialGPS(RX_PIN, TX_PIN);
 String latitude, longitude;
 boolean gpsAvailable;
+boolean shareLocation = true; // Set this to false if you dont want your GPS information to be transmitted
 
 const int MPU_addr = 0x68;
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
@@ -82,10 +83,7 @@ void loop() {
       fetchGPSInfo();
       String link = gpsAvailable ? ("http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude) : "No GPS available";
       
-      sendWhatsAppMessage("!FALL DETECTION!\n" + link);
-
-      // to disable the sharing of GPS information, delete the previous 4 lines and uncomment the following
-      // sendWhatsAppMessage("!FALL DETECTION!");
+      sendWhatsAppMessage("\n!FALL DETECTION!\n" + (shareLocation ? link : ""));
     } else {
       // Signal that alarm was aborted
       for (int i = 0; i < 5; i++) {
@@ -132,7 +130,7 @@ void sendWhatsAppMessage(String message) {
   http.end();
 }
 
-// Sets fall=true, if fall is detected (tinker with the values, in case more/less sensibility is required)
+// Sets fall=true, if a fall is detected (tinker with the values, in case more/less sensibility is required)
 void checkFalling() {
   mpu_read(); // read in Accelerometer and Gyroscope Sensor data
   ax = (AcX - 2050) / 16384.00;
