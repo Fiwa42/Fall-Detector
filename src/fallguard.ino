@@ -8,25 +8,25 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-#define LED_BUZZER_PIN D7
+//#define BUZZER_PIN D7
+#define LED_PIN D4
 #define BUTTON_PIN D3
 #define RX_PIN D6
 #define TX_PIN D5
 
+
 // Enter your personal WiFi SSID and Password here
-const char *ssid = "***";
-const char *passwd = "***";
+const char *ssid = ".......";
+const char *passwd = ".......";
 
 // Enter your phone-number and the API-Key you get after setup here
 // Info about the API-Setup on callmebot.com/blog/free-api-whatsapp-messages/
-String phoneNumber = "***";
-String apiKey = "***";
+String phoneNumber = ".......";
+String apiKey = ".......";
 
 TinyGPSPlus gps;
-SoftwareSerial SerialGPS(RX_PIN, TX_PIN);
-String latitude, longitude;
-boolean gpsAvailable;
-boolean shareLocation = true; // Set this to false if you dont want your GPS information to be transmitted
+SoftwareSerial gpsSerial(TX_PIN, RX_PIN);
+String latitude, longitude, link;
 
 const int MPU_addr = 0x68;
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
@@ -39,10 +39,13 @@ boolean fall = false;
 
 void setup() {
 
-  pinMode(LED_BUZZER_PIN, OUTPUT);
+  //pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH); // turns the LED on, this gets turned off after it connects to WiFi
 
-  SerialGPS.begin(9600);
+  Serial.begin(9600);
+  gpsSerial.begin(9600);
 
   Wire.begin();
   Wire.beginTransmission(MPU_addr);
@@ -59,56 +62,73 @@ void setup() {
 
 void loop() {
 
-  checkFalling();
-  if (fall || !digitalRead(BUTTON_PIN)) { // trigger alarm if fall is detected OR button is pressed manuelly
+  while (WiFi.status() == WL_CONNECTED) { // only starts when it's connected to WiFi
+    digitalWrite(LED_PIN, LOW);
 
-    delay(500);
+    fetchGPSInfo();
 
-    boolean abort = false;
-    for (int i = 0; i < 10; i++) {
-      // Stop alarm and whatsapp message, when button is pressed again 
-      if (!digitalRead(BUTTON_PIN)) {
-        abort = true;
-        break;
+    checkFalling();
+    if (fall || !digitalRead(BUTTON_PIN)) { // trigger alarm if fall is detected OR button is pressed manually
+
+      delay(500);
+
+      boolean abort = false;
+      for (int i = 0; i < 10; i++) {
+        // stop alarm and whatsapp message, when button is pressed again 
+        if (!digitalRead(BUTTON_PIN)) {
+          abort = true;
+          break;
+        }
+        // Alarm signal via LED and buzzer 
+        //digitalWrite(BUZZER_PIN, HIGH);
+        digitalWrite(LED_PIN, HIGH);
+        delay(1000);
+        //digitalWrite(BUZZER_PIN, LOW);
+        digitalWrite(LED_PIN, LOW);
+        delay(1000);
       }
-      // Alarm signal via LED and buzzer 
-      digitalWrite(LED_BUZZER_PIN, HIGH);
-      delay(1000);
-      digitalWrite(LED_BUZZER_PIN, LOW);
-      delay(1000);
+
+      if (!abort) {
+        fetchGPSInfo();
+        
+        // send Whatsapp containing SOS message and google maps link with GPS information (or "No Location available.")
+        sendWhatsAppMessage("!FALL DETECTION!\n" + link);
+
+        // to disable the sharing of GPS information, delete the previous 4 lines and uncomment the following
+        // sendWhatsAppMessage("!FALL DETECTION!");
+      } else {
+        // signal that alarm was aborted
+        for (int i = 0; i < 5; i++) {
+         // digitalWrite(BUZZER_PIN, HIGH);
+          digitalWrite(LED_PIN, HIGH);
+          delay(200);
+         // digitalWrite(BUZZER_PIN, LOW);
+          digitalWrite(LED_PIN, LOW);
+          delay(200);
+        }
+      } 
+
+      fall = false; // reset falling
     }
 
-    if (!abort) {
-      // send Whatsapp containing SOS message and google maps link with GPS information (or "No GPS availaible")
-      fetchGPSInfo();
-      String link = gpsAvailable ? ("http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude) : "No GPS available";
-      
-      sendWhatsAppMessage("\n!FALL DETECTION!\n" + (shareLocation ? link : ""));
-    } else {
-      // Signal that alarm was aborted
-      for (int i = 0; i < 5; i++) {
-        digitalWrite(LED_BUZZER_PIN, HIGH);
-        delay(200);
-        digitalWrite(LED_BUZZER_PIN, LOW);
-        delay(200);
-      }
-    }
-
-    fall = false; // reset falling
+    delay(100);
   }
-
-  delay(100);
+  delay(1000);
+  digitalWrite(LED_PIN, HIGH); // LED is on when not connected to WiFi
 }
+
 
 // Fetch current coordinates with GPS sensor, in case GPS is available
 void fetchGPSInfo() {
-  gpsAvailable = false;
-  if (SerialGPS.available() > 0) {
-    if (gps.encode(SerialGPS.read())) {
+ while (gpsSerial.available() > 0) {
+    if (gps.encode(gpsSerial.read())) {
       if (gps.location.isValid()) {
         latitude = String(gps.location.lat(), 6);
         longitude = String(gps.location.lng(), 6);
-        gpsAvailable = true;
+        link = "http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude;
+      }
+      else {
+        link = "Location is not available.";
       }
     }
   }
@@ -130,7 +150,7 @@ void sendWhatsAppMessage(String message) {
   http.end();
 }
 
-// Sets fall=true, if a fall is detected (tinker with the values, in case more/less sensibility is required)
+// Sets fall=true, if fall is detected (tinker with the values, in case more/less sensibility is required)
 void checkFalling() {
   mpu_read(); // read in Accelerometer and Gyroscope Sensor data
   ax = (AcX - 2050) / 16384.00;
@@ -185,6 +205,7 @@ void checkFalling() {
   }
 }
 
+// get the readings of the accelerometer
 void mpu_read() {
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B);
