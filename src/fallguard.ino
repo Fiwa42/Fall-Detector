@@ -8,7 +8,7 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-//#define BUZZER_PIN D7
+#define BUZZER_PIN D7
 #define LED_PIN D4
 #define BUTTON_PIN D3
 #define RX_PIN D6
@@ -27,6 +27,7 @@ String apiKey = ".......";
 TinyGPSPlus gps;
 SoftwareSerial gpsSerial(TX_PIN, RX_PIN);
 String latitude, longitude, link;
+boolean shareLocation = true; // Set this to false if you dont want your GPS information to be transmitted
 
 const int MPU_addr = 0x68;
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
@@ -39,7 +40,7 @@ boolean fall = false;
 
 void setup() {
 
-  //pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // turns the LED on, this gets turned off after it connects to WiFi
@@ -80,10 +81,10 @@ void loop() {
           break;
         }
         // Alarm signal via LED and buzzer 
-        //digitalWrite(BUZZER_PIN, HIGH);
+        digitalWrite(BUZZER_PIN, HIGH);
         digitalWrite(LED_PIN, HIGH);
         delay(1000);
-        //digitalWrite(BUZZER_PIN, LOW);
+        digitalWrite(BUZZER_PIN, LOW);
         digitalWrite(LED_PIN, LOW);
         delay(1000);
       }
@@ -92,17 +93,17 @@ void loop() {
         fetchGPSInfo();
         
         // send Whatsapp containing SOS message and google maps link with GPS information (or "No Location available.")
-        sendWhatsAppMessage("!FALL DETECTION!\n" + link);
+        sendWhatsAppMessage("!FALL DETECTION!\n" + (shareLocation ? link : ""));
 
         // to disable the sharing of GPS information, delete the previous 4 lines and uncomment the following
         // sendWhatsAppMessage("!FALL DETECTION!");
       } else {
         // signal that alarm was aborted
         for (int i = 0; i < 5; i++) {
-         // digitalWrite(BUZZER_PIN, HIGH);
+          digitalWrite(BUZZER_PIN, HIGH);
           digitalWrite(LED_PIN, HIGH);
           delay(200);
-         // digitalWrite(BUZZER_PIN, LOW);
+          digitalWrite(BUZZER_PIN, LOW);
           digitalWrite(LED_PIN, LOW);
           delay(200);
         }
@@ -150,7 +151,7 @@ void sendWhatsAppMessage(String message) {
   http.end();
 }
 
-// Sets fall=true, if fall is detected (tinker with the values, in case more/less sensibility is required)
+// Sets fall=true, if a fall is detected (tinker with the values, in case more/less sensibility is required)
 void checkFalling() {
   mpu_read(); // read in Accelerometer and Gyroscope Sensor data
   ax = (AcX - 2050) / 16384.00;
