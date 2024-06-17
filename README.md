@@ -1,2 +1,5 @@
 # <project_fallguard>
-Device that detects if someone falls and sends a message to others to call for help, build with a D1 Mini and MPU6050
+Der Fallguard ist ein Gerät, das am Körper getragen wird und automatisch erkennt, wenn der Benutzer gestürzt ist.
+Wenn ein Sturz erkannt wurde, sendet der Fallguard automatisch eine WhatsApp-Benachrichtigung an eine vorher ausgewählte
+Kontaktperson, um auf diese Weise schnell Hilfe zu holen. Dazu wird auch der Standort übermittelt, an dem sich der
+Sturz ereignet hat, inklusive Google-Maps-Link.
