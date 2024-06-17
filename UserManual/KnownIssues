@@ -15,7 +15,6 @@ Nach dem Einschalten braucht der GPS-Sensor einige Minuten, um seinen Standort g
 dass kein Standort bestimmt werden kann. Wir umgehen dieses Problem in unserem Fall dadurch, dass wir in der Alarmierungsnachricht mitteilen, dass kein Standort bestimmt werden kann.
 Will man zu jeder Zeit sicherstellen, dass der Standort bestimmt werden kann, müsste man auf zuverlässigere Technik zurückgreifen.
 
-
 Probleme mit dem Ladekabel
 
 Aktuell hat unser Fallguard noch zwei verschiedene Varianten, mit denen er geladen werden kann. Unsere eigentliche Idee war, ihn über ein DC-Kabel zu laden,
@@ -26,3 +25,9 @@ USB-Ladeanschluss eingebaut haben. Im konkreten Anwendungsfall müsste man sich 
 WhatsApp für die Nutzung erforderlich
 Aktuell ist man auf ein Handy mit WhatsApp und Internetverbindung angewiesen, um die Alarmierung des Fallguards empfangen zu können. Dadurch ist die Nachrichtenübermittlung
 natürlich etwas eingeschränkt. Weiter oben haben wir unter „Konfiguration“ aber beschrieben, wie man den Kommunikationskanal anpassen kann.
+
+Begrenztes Nachrichtenvolumen
+Ein weiteres Problem stellt die Nachrichtenbegrenzung der callmebot-API dar. Man kann innerhalb von 4 Stunden nur maximal 240 Nachrichten garantiert in Echtzeit übertragen.
+Versucht man, in diesem Zeitraum noch mehr Nachrichten zu übertragen, werden sie zuerst in einer Queue abgelegt und versendet, sobald Kapazitäten verfügbar sind.
+Eine Echtzeitübertragung ist damit nicht garantiert. Unsere Erfahrungen haben aber gezeigt, dass die Verzögerung in einem solchen Fall in aller Regel nur wenige Sekunden
+beträgt. Außerdem wird der Fallguard im Nutzungsbetrieb diese Begrenzung wohl nie erreichen.
