@@ -2,7 +2,6 @@ Auch wenn wir mit unserem Fallguard insgesamt sehr zufrieden sind, gibt es auch 
 aufmerksam machen möchten.
 
 Hartes, eher kantiges Gehäuse:
-
 Unser aktuelles Design ist eher ein Proof of Concept. Der Fokus lag in der Entwicklung der Hardwarearchitektur und der Softwareentwicklung.
 Das Gehäuse selbst ist funktionstüchtig und genügt für eine Inbetriebnahme, allerdings besteht hier noch Optimierungsbedarf. Aktuell besteht
 das Gehäuse aus recht hartem PLA-Filament und ist recht kantig. Damit der Fallguard einen Sturz auf jeden Fall unbeschadet übersteht und den
@@ -10,13 +9,11 @@ Alarm absetzen kann, war ein stabiles Gehäuse unerlässlich. Allerdings besteht
 den Fallguard fallen. Um dieses Problem zu beheben, müsste man ein neues, flacheres Gehäuse entwickeln und es gegebenenfalls zusätzlich polstern.
 
 Unter Umständen kein GPS-Signal verfügbar
-
 Nach dem Einschalten braucht der GPS-Sensor einige Minuten, um seinen Standort genau zu bestimmen. Gegebenenfalls kann es auch im laufenden Betrieb passieren,
 dass kein Standort bestimmt werden kann. Wir umgehen dieses Problem in unserem Fall dadurch, dass wir in der Alarmierungsnachricht mitteilen, dass kein Standort bestimmt werden kann.
 Will man zu jeder Zeit sicherstellen, dass der Standort bestimmt werden kann, müsste man auf zuverlässigere Technik zurückgreifen.
 
 Probleme mit dem Ladekabel
-
 Aktuell hat unser Fallguard noch zwei verschiedene Varianten, mit denen er geladen werden kann. Unsere eigentliche Idee war, ihn über ein DC-Kabel zu laden,
 dass wir im Gehäuse durch ein Loch nach außen führen. Dadurch wäre das Laden extrem einfach und sicher, was gerade im Anwendungskontext des Fallguards sinnvoll erschien.
 Allerdings erwies es sich als sehr platzraubend und nicht leicht umsetzbar, das DC-Kabel entsprechend zu installieren, sodass wir zur Sicherheit noch einen
