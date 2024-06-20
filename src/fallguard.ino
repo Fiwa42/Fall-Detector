@@ -43,6 +43,7 @@ void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
+  
   digitalWrite(LED_PIN, HIGH); // turns the LED on, this gets turned off after it connects to WiFi
 
   Serial.begin(9600);
@@ -90,13 +91,9 @@ void loop() {
       }
 
       if (!abort) {
-        fetchGPSInfo();
-        
         // send Whatsapp containing SOS message and google maps link with GPS information (or "No Location available.")
+        fetchGPSInfo();
         sendWhatsAppMessage("!FALL DETECTION!\n" + (shareLocation ? link : ""));
-
-        // to disable the sharing of GPS information, delete the previous 4 lines and uncomment the following
-        // sendWhatsAppMessage("!FALL DETECTION!");
       } else {
         // signal that alarm was aborted
         for (int i = 0; i < 5; i++) {
@@ -114,10 +111,10 @@ void loop() {
 
     delay(100);
   }
+  
   delay(1000);
   digitalWrite(LED_PIN, HIGH); // LED is on when not connected to WiFi
 }
-
 
 // Fetch current coordinates with GPS sensor, in case GPS is available
 void fetchGPSInfo() {
@@ -127,8 +124,7 @@ void fetchGPSInfo() {
         latitude = String(gps.location.lat(), 6);
         longitude = String(gps.location.lng(), 6);
         link = "http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=" + latitude + "+" + longitude;
-      }
-      else {
+      } else {
         link = "Location is not available.";
       }
     }
